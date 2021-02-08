@@ -2,14 +2,10 @@ package main
 
 import (
 	"bufio"
-	"bytes"
-	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
 	"io/ioutil"
 	"log"
-	"net/http"
 	"os"
 	"strings"
 
@@ -30,7 +26,7 @@ type GitlabVar struct {
 	Masked           bool   `json:"masked" yaml:"masked"`
 }
 
-type Varlist []*GitlabVar
+type Varlist = []*GitlabVar
 
 var (
 	importPath  string
@@ -202,108 +198,6 @@ func getYaml() error {
 		return err
 	}
 	fmt.Println("Saved to ", exportPath)
-	return nil
-}
-
-func gitlabClient(url string, method string, data []byte) ([]byte, error) {
-
-	var payload io.Reader
-	if data != nil {
-		payload = bytes.NewBuffer(data)
-	}
-
-	client := &http.Client{}
-	req, err := http.NewRequest(method, fmt.Sprintf(url, projectID), payload)
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Set("PRIVATE-TOKEN", gitlabToken)
-	req.Header.Set("Content-Type", "application/json")
-	res, err := client.Do(req)
-	if err != nil {
-		return nil, err
-	}
-
-	defer res.Body.Close()
-
-	if !(res.StatusCode >= 200 && res.StatusCode <= 299) {
-		buf := new(strings.Builder)
-		_, err := io.Copy(buf, res.Body)
-		if err != nil {
-			return nil, err
-		}
-
-		return nil, errors.New(buf.String())
-	}
-
-	body, err := ioutil.ReadAll(res.Body)
-	if err != nil {
-		return nil, err
-	}
-
-	return body, nil
-}
-
-func getVars() (varlist *Varlist, err error) {
-	url := gitlabURL
-
-	body, err := gitlabClient(url, "GET", nil)
-	if err != nil {
-		return nil, err
-	}
-
-	err = json.Unmarshal(body, &varlist)
-	if err != nil {
-		return nil, err
-	}
-	return
-}
-
-func createVars(v *GitlabVar) error {
-	data, err := json.Marshal(v)
-	if err != nil {
-		return err
-	}
-
-	url := gitlabURL
-
-	_, err = gitlabClient(url, "POST", data)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func updateVars(v *GitlabVar) error {
-	data, err := json.Marshal(v)
-	if err != nil {
-		return err
-	}
-
-	url := gitlabURL + "/" + v.Key
-
-	_, err = gitlabClient(url, "PUT", data)
-
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func deleteVars(v *GitlabVar) error {
-	data, err := json.Marshal(v)
-	if err != nil {
-		return err
-	}
-
-	url := gitlabURL + "/" + v.Key
-
-	_, err = gitlabClient(url, "DELETE", data)
-
-	if err != nil {
-		return err
-	}
 	return nil
 }
 

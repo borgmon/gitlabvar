@@ -33,10 +33,13 @@ export PATH="$PATH:$HOME/go/bin"
 
 ```zsh
 NAME:
-   gitlabvar - Export and apply your CI variable from gitlab
+   gitlabvar - Export and import your CI variable from gitlab
 
 USAGE:
    gitlabvar [global options] command [command options] [arguments...]
+
+DESCRIPTION:
+   Example: gitlabvar --token {gitlab-token} -project {projectID} get
 
 COMMANDS:
    apply, a  apply variable yaml to gitlab project

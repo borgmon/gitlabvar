@@ -39,7 +39,7 @@ USAGE:
    gitlabvar [global options] command [command options] [arguments...]
 
 DESCRIPTION:
-   Example: gitlabvar --token {gitlab-token} -project {projectID} get
+   Example: gitlabvar --token {gitlab-token} --project {projectID} get
 
 COMMANDS:
    apply, a  apply variable yaml to gitlab project

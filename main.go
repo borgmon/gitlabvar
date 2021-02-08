@@ -26,6 +26,8 @@ type GitlabVar struct {
 	Value            string `json:"value" yaml:"value"`
 	EnvironmentScope string `json:"environment_scope" yaml:"environment_scope"`
 	VariableType     string `json:"variable_type" yaml:"variable_type"`
+	Protected        bool   `json:"protected" yaml:"protected"`
+	Masked           bool   `json:"masked" yaml:"masked"`
 }
 
 type Varlist []*GitlabVar
@@ -157,6 +159,7 @@ func verifyArg() error {
 	}
 	return nil
 }
+
 func getDotEnv() error {
 	varlist, err := getVars()
 	if err != nil {
@@ -315,7 +318,7 @@ func applyYaml() error {
 		return err
 	}
 
-	updateL, createL, deleteL := fancy(newVarlist, oldVarlist)
+	updateL, createL, deleteL := syncList(newVarlist, oldVarlist)
 
 	if len(*updateL) == 0 && len(*createL) == 0 && len(*deleteL) == 0 {
 		fmt.Println("Nothing to update")
@@ -372,11 +375,13 @@ func applyYaml() error {
 }
 
 func sampleYaml() error {
-	sample := `- key: K8S_SECRET_{YOUR_ENV_NAME}
-  value: {YOUR_ENV_VALUE}
+	sample := `- key: ENV_NAME
+  value: ENV_VALUE
   environment_scope: '*'
   variable_type: env_var
-`
+  protected: false
+  masked: false
+	`
 	err := ioutil.WriteFile(exportPath, []byte(sample), 0644)
 	if err != nil {
 		return err
@@ -384,9 +389,9 @@ func sampleYaml() error {
 	return nil
 }
 
-func fancy(newL *Varlist, oldL *Varlist) (*Varlist, *Varlist, *Varlist) {
+func syncList(newL *Varlist, oldL *Varlist) (*Varlist, *Varlist, *Varlist) {
 	var (
-		m       = make(map[string]*GitlabVar)
+		m       = make(map[string]*GitlabVar) // hashmap we are going to use. key: unique identifier, value: entire object
 		updateL = &Varlist{}
 		createL = &Varlist{}
 		deleteL = &Varlist{}

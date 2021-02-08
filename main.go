@@ -37,6 +37,7 @@ var (
 	exportPath  string
 	gitlabToken string
 	projectID   string
+	envScope    string
 )
 
 func main() {
@@ -120,7 +121,13 @@ func getCLI() *cli.App {
 			{
 				Name:    "env",
 				Aliases: []string{"e"},
-				Usage:   "export .env file",
+				Usage:   "export .env file, use --scope or -s to specify EnvironmentScope",
+				Flags: []cli.Flag{&cli.StringFlag{
+					Name:        "scope",
+					Aliases:     []string{"s"},
+					Usage:       "EnvironmentScope you prefer. Default use *",
+					Destination: &envScope,
+				}},
 				Action: func(c *cli.Context) error {
 					err := verifyArg()
 					if err != nil {
@@ -168,12 +175,11 @@ func getDotEnv() error {
 	}
 	var buf string
 	for _, e := range *varlist {
-		if (e.EnvironmentScope == "qa" || e.EnvironmentScope == "*") && e.VariableType == "env_var" {
+		if (e.EnvironmentScope == envScope || e.EnvironmentScope == "*") && e.VariableType == "env_var" {
 			buf += strings.Replace(e.Key, "K8S_SECRET_", "", 1) + "=" + e.Value + "\n"
 		}
 	}
 	err = ioutil.WriteFile(".env", []byte(buf), 0644)
-	fmt.Println(buf, []byte(buf))
 	if err != nil {
 		return err
 	}

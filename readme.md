@@ -44,7 +44,7 @@ DESCRIPTION:
 COMMANDS:
    apply, a  apply variable yaml to gitlab project
    get, g    get variable yaml from gitlab project
-   env, e    export .env file
+   env, e    export .env file, use --scope or -s to specify EnvironmentScope
    init, i   get a sample yaml file
 
 GLOBAL OPTIONS:

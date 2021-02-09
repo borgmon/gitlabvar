@@ -323,7 +323,7 @@ func syncList(newL *Varlist, oldL *Varlist) (*Varlist, *Varlist, *Varlist) {
 }
 
 func deepEq(a *GitlabVar, b *GitlabVar) bool {
-	if a.EnvironmentScope == b.EnvironmentScope && a.Key == b.Key && a.Value == b.Value && a.VariableType == b.VariableType {
+	if a.EnvironmentScope == b.EnvironmentScope && a.Key == b.Key && a.Value == b.Value && a.VariableType == b.VariableType && a.Masked == b.Masked && a.Protected == b.Protected {
 		return true
 	}
 	return false

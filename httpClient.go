@@ -8,6 +8,7 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+	"sort"
 	"strconv"
 )
 
@@ -82,6 +83,9 @@ func getVars() (l *Varlist, err error) {
 			*l = append(*l, *tmp...)
 			i++
 		} else {
+			sort.Slice(*l, func(i, j int) bool {
+				return (*l)[i].Key < (*l)[j].Key
+			})
 			return l, nil
 		}
 	}

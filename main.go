@@ -172,7 +172,7 @@ func getDotEnv() error {
 	var buf string
 	for _, e := range *varlist {
 		if (e.EnvironmentScope == envScope || e.EnvironmentScope == "*") && e.VariableType == "env_var" {
-			buf += strings.Replace(e.Key, "K8S_SECRET_", "", 1) + "=" + e.Value + "\n"
+			buf += strings.Replace(e.Key, "K8S_SECRET_", "", 1) + "=\"" + e.Value + "\"\n"
 		}
 	}
 	err = ioutil.WriteFile(".env", []byte(buf), 0644)

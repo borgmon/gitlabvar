@@ -48,7 +48,7 @@ func getCLI() *cli.App {
 	app := &cli.App{
 		Name:                 "gitlabvar",
 		Usage:                "Export and import your CI variable from gitlab",
-		Description:          "Example: gitlabvar --token ABC -project 123 get\ngitlabvar -p 123 e -s qa",
+		Description:          "Example: \tgitlabvar --token ABC -project 123 get\n\tgitlabvar -p 123 e -s qa",
 		EnableBashCompletion: true,
 		HideHelpCommand:      true,
 		Flags: []cli.Flag{

@@ -48,7 +48,7 @@ func getCLI() *cli.App {
 	app := &cli.App{
 		Name:                 "gitlabvar",
 		Usage:                "Export and import your CI variable from gitlab",
-		Description:          "Example: gitlabvar --token {gitlab-token} -project {projectID} get",
+		Description:          "Example: gitlabvar --token ABC -project 123 get\ngitlabvar -p 123 e -s qa",
 		EnableBashCompletion: true,
 		HideHelpCommand:      true,
 		Flags: []cli.Flag{
@@ -69,7 +69,7 @@ func getCLI() *cli.App {
 			&cli.StringFlag{
 				Name:        "token",
 				Aliases:     []string{"t"},
-				Usage:       "gitlab token. scope required: api. get it from here: https://gitlab.com/-/profile/personal_access_tokens",
+				Usage:       "gitlab token. scope required: api. get it from here: https://gitlab.com/-/profile/personal_access_tokens. Token can also be loaded from env $GITLAB_TOKEN",
 				Destination: &gitlabToken,
 			},
 			&cli.StringFlag{
@@ -157,6 +157,9 @@ func getCLI() *cli.App {
 func verifyArg() error {
 	if projectID == "" {
 		return errors.New("projectID is required")
+	}
+	if gitlabToken == "" {
+		gitlabToken = os.Getenv("GITLAB_TOKEN")
 	}
 	if gitlabToken == "" {
 		return errors.New("token is required")

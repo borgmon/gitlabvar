@@ -50,7 +50,7 @@ COMMANDS:
 GLOBAL OPTIONS:
    --import value, -i value   import yaml file path (default: ".gitlab-ci-var.yaml")
    --export value, -o value   export yaml file path (default: ".gitlab-ci-var.yaml")
-   --token value, -t value    gitlab token. scope required: api. get it from here: https://gitlab.com/-/profile/personal_access_tokens
+   --token value, -t value    gitlab token. scope required: api. get it from here: https://gitlab.com/-/profile/personal_access_tokens. Token can also be loaded from env $GITLAB_TOKEN
    --project value, -p value  Project ID, get it from frontpage of the project
    --help, -h                 show help (default: false)
 ```
